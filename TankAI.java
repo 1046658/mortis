@@ -7,7 +7,7 @@ import game.Vec2;
 
 public class TankAI extends TankAIBase {
     public String getPlayerName() {
-        return "TankMaster";
+        return "TaAMANGANGOANGOANGOANGOANGABGAr";
     }
 
     public int getPlayerPeriod() {
