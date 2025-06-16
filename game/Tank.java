@@ -399,22 +399,22 @@ public class Tank extends GameObject {
 				TankCmd_Move cmdMove = (TankCmd_Move)this.activeCommand;
 				Vec2 moveVec = cmdMove.moveVec;
 				double moveDst = moveVec.length();
-				double moveTravelTime = moveDst / this.tankMoveSpeed;
-				
+				double moveTravelTime = moveDst / this.tankMoveSpeed; 
+				double acceleration = 1;
+				double oVelocity = moveDst/moveTravelTime;
 				// Update the active command...
-				cmdMove.progress = Math.min(cmdMove.progress + deltaTime / moveTravelTime, 1);
+				cmdMove.progress = Math.min(cmdMove.progress*acceleration + deltaTime / moveTravelTime, 1);
 				Vec2 prevPos = this.pos;
 				this.pos = Vec2.add(cmdMove.startPos, Vec2.multiply(moveVec, cmdMove.progress));
 				Vec2 motionVec = Vec2.subtract(this.pos, prevPos);
-				
 				// Check for tank overlap...
+
 				Tank otherTank = Game.get().getTank(this.playerIdx == 0 ? 1 : 0);
 				if ((otherTank != null) && Util.circlesIntersect(this.pos, BODY_HALFSIZE.x, otherTank.pos, BODY_HALFSIZE.x)) {
 					Vec2 deltaVec = Vec2.subtract(this.pos, otherTank.pos).unit();
 					this.pos = Vec2.add(this.pos, Vec2.multiply(deltaVec, 0.1));
 					cmdMove.progress = 1;
 				}
-
 				// Check for collecting powerups on the way (might be moving fast, so swept collision)...
 				ArrayList<GameObject> gameObjects = Simulation.getGameObjects();
 				for (int i = 0; i < gameObjects.size(); ++i) {
@@ -428,8 +428,11 @@ public class Tank extends GameObject {
 						}
 					}
 				}
-				
 				// Keep in bounds...
+				//if(oVelocity+acceleration*deltaTime == moveDst/2){
+					//acceleration = -1000;
+				//}
+
 				if (this.pos.x <= BODY_HALFSIZE.x) {
 					this.pos = Vec2.add(this.pos, Vec2.multiply(Vec2.right(), 0.1));
 					cmdMove.progress = 1;
