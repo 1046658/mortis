@@ -26,8 +26,8 @@ public class Tank extends GameObject {
 	private static final double TANK_TURRET_STROKE_WIDTH = 0.035;
 	private static final double TANK_ROUNDED_SIZE = 0.1;
 
-	public static final Color TANK_COLOR_BODY_FILL_1 = Color.GREEN;
-	public static final Color TANK_COLOR_BODY_FILL_2 = new Color(100, 100, 250);
+	protected static final Color TANK_COLOR_BODY_FILL_1 = Color.GREEN;
+	protected static final Color TANK_COLOR_BODY_FILL_2 = new Color(100, 100, 250);
 	protected static final Color TANK_COLOR_TREAD_FILL = Color.DARK_GRAY;
 	protected static final Color TANK_COLOR_TURRET_FILL_1 = new Color(44, 120, 44);
 	protected static final Color TANK_COLOR_TURRET_FILL_2 = new Color(44, 44, 120);
@@ -101,6 +101,8 @@ public class Tank extends GameObject {
 	private double tankMoveSpeed = STARTING_MOVE_SPEED; // units per second
 	private double tankTurnSpeed = STARTING_TURN_SPEED; // degrees per second
 	private double timeSinceShot = Double.MAX_VALUE;
+	private double timeSinceMoved = Double.MAX_VALUE;
+	private double timeSinceTurned = Double.MAX_VALUE;
 	private TankAIBase ai = null;
 	private UIStats uiStats = new UIStats();
 
@@ -397,6 +399,7 @@ public class Tank extends GameObject {
 		switch (this.activeCommand.type) {
 			case TankCmd_Move.TYPE : {
 				// Setup...
+				if (timeSinceShot >= 0.25) {
 				TankCmd_Move cmdMove = (TankCmd_Move)this.activeCommand;
 				Vec2 moveVec = cmdMove.moveVec;
 				double moveDst = moveVec.length();
@@ -456,11 +459,14 @@ public class Tank extends GameObject {
 				this.pos.clamp(new Vec2(0.2, 0.2), Vec2.subtract(Util.maxCoordFrameUnits(), new Vec2(0.2, 0.2)));
 				// And...check for done...
 				if (cmdMove.progress == 1) {
+					timeSinceMoved = 0.0;
 					this.finishActiveCommand();
 					moveElapsedTime = 0;
 				}
+				}
 			} break;
 			case TankCmd_Turn.TYPE : {
+				if (timeSinceShot >= 0.25) {
 				// Setup...
 				TankCmd_Turn cmdTurn = (TankCmd_Turn)this.activeCommand;
 				double trgAngle = cmdTurn.dir.angle();
@@ -481,13 +487,15 @@ public class Tank extends GameObject {
 				
 				// And...check for done...
 				if (cmdTurn.progress == 1) {
+					timeSinceTurned = 0.0;
 					this.finishActiveCommand();
 					moveElapsedTime = 0;
-				}				
+				}
+				}
 			} break;
 			case TankCmd_Shoot.TYPE : {
 				// Enforce a max shot period...
-				if (timeSinceShot >= 1) {
+				if (timeSinceShot >= 1 && timeSinceTurned >= 0.25 && timeSinceMoved >= 0.25) {
 					// Shoot...
 					Simulation.get().createAmmo(this.playerIdx, this.ammoSpawnLocation(), this.dir, this.ammoMaxRange);
 					
@@ -530,6 +538,8 @@ public class Tank extends GameObject {
 
 		// Timer(s)...
 		timeSinceShot += deltaTime;
+		timeSinceMoved += deltaTime;
+		timeSinceTurned += deltaTime;
 
 		// Keep us on the field...
 		keepOnField();
