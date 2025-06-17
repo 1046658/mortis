@@ -407,7 +407,7 @@ public class Tank extends GameObject {
 				moveElapsedTime += deltaTime;
 				double t = Math.min(moveElapsedTime / moveTravelTime, 1.0);
 
-				if (t < 0.5) {
+				if (t < 0.50) {
 					cmdMove.progress = 2 * t * t; // accelerate
 				} else {
 					cmdMove.progress = 1 - 2 * Math.pow(1 - t, 2); // decelerate
@@ -436,10 +436,6 @@ public class Tank extends GameObject {
 						}
 					}
 				}
-				// Keep in bounds...
-				//if(oVelocity+acceleration*deltaTime == moveDst/2){
-					//acceleration = -1000;
-				//}
 
 				if (this.pos.x <= BODY_HALFSIZE.x) {
 					this.pos = Vec2.add(this.pos, Vec2.multiply(Vec2.right(), 0.1));
@@ -471,6 +467,14 @@ public class Tank extends GameObject {
 				double angleDelta = Util.minAngleToAngleDelta(cmdTurn.startDir.angle(), trgAngle);
 				double moveTravelTime = Math.abs(angleDelta) / this.tankTurnSpeed;
 				
+				moveElapsedTime += deltaTime;
+				double t = Math.min(moveElapsedTime / moveTravelTime, 1.0);
+
+				if (t < 0.75) {
+					cmdTurn.progress = 1.5 * t * t; // accelerate
+				} else {
+					cmdTurn.progress = 1 - 2 * Math.pow(1 - t, 2); // decelerate
+				}
 				// Update the active command...
 				cmdTurn.progress = Math.min(cmdTurn.progress + deltaTime / moveTravelTime, 1);
 				this.dir = Vec2.rotate(cmdTurn.startDir, angleDelta * cmdTurn.progress).unit();
@@ -478,6 +482,7 @@ public class Tank extends GameObject {
 				// And...check for done...
 				if (cmdTurn.progress == 1) {
 					this.finishActiveCommand();
+					moveElapsedTime = 0;
 				}				
 			} break;
 			case TankCmd_Shoot.TYPE : {
