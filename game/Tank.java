@@ -26,8 +26,8 @@ public class Tank extends GameObject {
 	private static final double TANK_TURRET_STROKE_WIDTH = 0.035;
 	private static final double TANK_ROUNDED_SIZE = 0.1;
 
-	protected static final Color TANK_COLOR_BODY_FILL_1 = Color.GREEN;
-	protected static final Color TANK_COLOR_BODY_FILL_2 = new Color(100, 100, 250);
+	public static final Color TANK_COLOR_BODY_FILL_1 = Color.GREEN;
+	public static final Color TANK_COLOR_BODY_FILL_2 = new Color(100, 100, 250);
 	protected static final Color TANK_COLOR_TREAD_FILL = Color.DARK_GRAY;
 	protected static final Color TANK_COLOR_TURRET_FILL_1 = new Color(44, 120, 44);
 	protected static final Color TANK_COLOR_TURRET_FILL_2 = new Color(44, 44, 120);

@@ -10,8 +10,8 @@ public class Ammo extends GameObject {
     public static final double AMMO_RADIUS = 0.15;
 	private static final double AMMO_HEIGHT = 2.75;
 	private static final double AMMO_STROKE_WIDTH = 0.05;
-	private static final Color AMMO_COLOR_FILL_0 = new Color(30, 120, 30);
-	private static final Color AMMO_COLOR_FILL_1 = new Color(30, 30, 120);
+	private static final Color AMMO_COLOR_FILL_0 = Tank.TANK_COLOR_BODY_FILL_1;
+	private static final Color AMMO_COLOR_FILL_1 = Tank.TANK_COLOR_BODY_FILL_2;
 	private static final Color AMMO_COLOR_STROKE = Color.BLACK;
 
     // Member variables...
