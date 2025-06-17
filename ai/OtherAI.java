@@ -8,5 +8,5 @@ import game.Vec2;
 
 public class OtherAI extends TankAIBase {
     // Your opponents code goes here
-    
+    //HI
 }
