@@ -10,6 +10,7 @@ import ai.OtherAI;
 
 public class Tank extends GameObject {
     // Constants...
+	private double moveElapsedTime = 0;
 	public final static Vec2 BODY_HALFSIZE = new Vec2(0.4, 0.325);
 	public final static double TREAD_HALFWIDTH = 0.1;
 	public final static double TREAD_HALFLENGTH = 0.45;
@@ -250,7 +251,7 @@ public class Tank extends GameObject {
 		return true;
 	}
 
-	public Vec2 getVel() {
+	public Vec2 getVel() { //IMPORTANT
 		if ((this.activeCommand != null) && 
 			(this.activeCommand.type == TankCmd_Move.TYPE)) {
 			TankCmd_Move cmdMove = (TankCmd_Move)this.activeCommand;
@@ -402,8 +403,15 @@ public class Tank extends GameObject {
 				double moveTravelTime = moveDst / this.tankMoveSpeed; 
 				double acceleration = 1;
 				double oVelocity = moveDst/moveTravelTime;
-				// Update the active command...
-				cmdMove.progress = Math.min(cmdMove.progress*acceleration + deltaTime / moveTravelTime, 1);
+				// Update the active command...''
+				moveElapsedTime += deltaTime;
+				double t = Math.min(moveElapsedTime / moveTravelTime, 1.0);
+
+				if (t < 0.5) {
+					cmdMove.progress = 2 * t * t; // accelerate
+				} else {
+					cmdMove.progress = 1 - 2 * Math.pow(1 - t, 2); // decelerate
+				}
 				Vec2 prevPos = this.pos;
 				this.pos = Vec2.add(cmdMove.startPos, Vec2.multiply(moveVec, cmdMove.progress));
 				Vec2 motionVec = Vec2.subtract(this.pos, prevPos);
@@ -420,7 +428,7 @@ public class Tank extends GameObject {
 				for (int i = 0; i < gameObjects.size(); ++i) {
 					GameObject gameObject = gameObjects.get(i);
 					if (gameObject instanceof PowerUp) {
-						PowerUp powerUp = (PowerUp)gameObject;
+						PowerUp powerUp = (PowerUp)gameObject;					
 						if (!powerUp.isDying() &&
 						    Util.intersectCircleCapsule(powerUp.pos, PowerUp.POWERUP_HALFDIMS.x, prevPos, motionVec, Tank.BODY_HALFSIZE.x)) {
 							// Collect it...
@@ -450,10 +458,10 @@ public class Tank extends GameObject {
 					cmdMove.progress = 1;
 				}
 				this.pos.clamp(new Vec2(0.2, 0.2), Vec2.subtract(Util.maxCoordFrameUnits(), new Vec2(0.2, 0.2)));
-				
 				// And...check for done...
 				if (cmdMove.progress == 1) {
 					this.finishActiveCommand();
+					moveElapsedTime = 0;
 				}
 			} break;
 			case TankCmd_Turn.TYPE : {

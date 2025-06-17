@@ -30,7 +30,7 @@ public class Game implements ActionListener {
     private static final Vec2 LEVELTIMER_TEXT_BOX_HALF_DIMS_PIXELS = new Vec2(40, (double)World.FIELD_BORDER_TOP * 0.5);
     private static final Vec2 PLAYER_DISPLAY_TEXT_BOX_HALF_DIMS_PIXELS = new Vec2(85, (double)World.FIELD_BORDER_TOP * 0.55);
 
-    public static final int TEST_HARNESS_SUPPORT    =  1;    // When non-zero, will run the specified timeSteps at a rate of 60 FPS
+    public static final int TEST_HARNESS_SUPPORT    =  0;    // When non-zero, will run the specified timeSteps at a rate of 60 FPS
 
     public static boolean playWithTargets = false;          // By default, no targets...later we'll add them (main configures this when it creates the game)
 
