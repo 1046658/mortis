@@ -109,6 +109,25 @@ public class Tank extends GameObject {
 	private TankCmd activeCommand = null;
 	private ArrayList<TankCmd> queuedCommands = new ArrayList<TankCmd>();
 
+	public double calcSpread() {
+        double localTimeSinceMoved = Math.min(timeSinceMoved, 2.0);
+        double localTimeSinceTurned = Math.min(timeSinceTurned, 1.0);
+        double localTimeSinceShot = Math.min(timeSinceShot, 2.0);
+   
+        double movedSpread = (1.0 - localTimeSinceMoved / 2.0);
+        double turnedSpread = (1.0 - localTimeSinceTurned);
+        double shotSpread = (1.0 - localTimeSinceShot / 2.0);
+   
+        double spreadMoved = 5 * movedSpread * movedSpread;
+        double spreadTurned = 2.5 * turnedSpread * turnedSpread;
+        double spreadShot = 5 * shotSpread * shotSpread;
+   
+        double totalSpread = spreadMoved + spreadTurned + spreadShot;
+        totalSpread = Math.min(totalSpread, 5);
+   
+        return (Math.random() * 2 - 1) * totalSpread;
+    }  
+
 	// Accessors...
 	protected int getPlayerIdx() {
 		return this.playerIdx;
@@ -359,7 +378,7 @@ public class Tank extends GameObject {
 		}
 		else if (nextCommand instanceof TankCmd_Shoot) {
 			TankCmd_Shoot cmdShoot = (TankCmd_Shoot)nextCommand;
-			if (Vec2.dot(this.dir.unit(), cmdShoot.dir.unit()) < 0.999) {
+			if (Vec2.dot(this.dir.unit(), cmdShoot.dir.unit()) < 0.999 && timeSinceShot >= 0.25) {
 				nextCommand = new TankCmd_Turn(cmdShoot.dir.unit());
 				needToTurnFirst = true;
 			}
@@ -497,7 +516,7 @@ public class Tank extends GameObject {
 				// Enforce a max shot period...
 				if (timeSinceShot >= 1 && timeSinceTurned >= 0.25 && timeSinceMoved >= 0.25) {
 					// Shoot...
-					Simulation.get().createAmmo(this.playerIdx, this.ammoSpawnLocation(), this.dir, this.ammoMaxRange);
+					Simulation.get().createAmmo(this.playerIdx, this.ammoSpawnLocation(), this.dir.rotate(calcSpread()), this.ammoMaxRange);
 					
 					// Reset our timer...
 					timeSinceShot = 0.0;
