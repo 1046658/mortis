@@ -88,7 +88,7 @@ public class Simulation {
     }
 
     protected double calcMinDstFromGameObject(Vec2 pos, Class<?> type) {
-        double minDst = 10000000;
+        double minDst = Integer.MAX_VALUE;
         for (int i = 0; i < this.gameObjects.size(); i++) { 
             GameObject gameObject = this.gameObjects.get(i);
             if (!type.isInstance(gameObject))
