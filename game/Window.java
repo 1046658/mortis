@@ -47,7 +47,6 @@ public class Window extends JFrame implements KeyListener {
 
     // Key press support...
     public void keyPressed(KeyEvent s) {   
-        //Tank.BODY_HALFSIZE = Tank.BODY_HALFSIZE.times(1.1);
     }
     public void keyReleased(KeyEvent e) {    
     }
