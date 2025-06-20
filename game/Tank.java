@@ -118,12 +118,12 @@ public class Tank extends GameObject {
         double turnedSpread = (1.0 - localTimeSinceTurned);
         double shotSpread = (1.0 - localTimeSinceShot / 2.0);
    
-        double spreadMoved = 5 * movedSpread * movedSpread;
-        double spreadTurned = 2.5 * turnedSpread * turnedSpread;
-        double spreadShot = 5 * shotSpread * shotSpread;
+        double spreadMoved = 10 * movedSpread * movedSpread;
+        double spreadTurned = 5 * turnedSpread * turnedSpread;
+        double spreadShot = 10 * shotSpread * shotSpread;
    
         double totalSpread = spreadMoved + spreadTurned + spreadShot;
-        totalSpread = Math.min(totalSpread, 5);
+        totalSpread = Math.min(totalSpread, 10);
    
         return (Math.random() * 2 - 1) * totalSpread;
     }  
