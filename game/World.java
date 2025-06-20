@@ -12,10 +12,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -78,11 +81,13 @@ public class World extends JPanel implements ActionListener, MouseListener {
         setBackground(COLOR_BACKGROUND);
 
         // Background texture...
-        // try {
-        //     bckGndImage = ImageIO.read(new File("textures/ground.png"));
-        // } 
-        // catch (IOException e) {
-        // }
+        /* 
+        try {
+             bckGndImage = ImageIO.read(new File("textures/sigma.png"));
+         } 
+         catch (IOException e) {
+         }
+         */
 
         // Kick off render timer...
         if (renderTimer != null && renderTimer.isRunning()) {

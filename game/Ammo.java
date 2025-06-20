@@ -20,7 +20,7 @@ public class Ammo extends GameObject {
     private double maxRange = -1.0;
     private Vec2 vel = null;
     private double radius = -1.0;
-
+	private double moveElapsedTime = 0.0;
 	// Accessors...
 	public int getPlayerIdx() {
 		return this.playerIdx;
@@ -82,10 +82,17 @@ public class Ammo extends GameObject {
 			this.radius = AMMO_RADIUS * Math.max(1.0 - this.timeTillDeath, 0.001);
 		}
 		else {
-			// Update position...
 			Vec2 prevPos = this.pos;
-			this.pos = Vec2.add(this.pos, Vec2.multiply(this.vel, deltaTime));
+			
+			double traveled = Vec2.subtract(this.pos, this.startPos).length();
+			double t = Math.min(traveled / this.maxRange, 1.0); // 0 to 1
+			double speedFactor = 0.9 - t * t; //Change 0.9 based on how much you want to decelerate
+			double currentSpeed = AMMO_SPEED * speedFactor;
+
+			Vec2 step = Vec2.multiply(this.vel.unit(), currentSpeed * deltaTime);
+			this.pos = Vec2.add(this.pos, step);
 			Vec2 motionVec = Vec2.subtract(this.pos, prevPos);
+
 
 			// Check for hitting things (do swept collision to avoid missing it)...
 			ArrayList<GameObject> gameObjects = Simulation.getGameObjects();

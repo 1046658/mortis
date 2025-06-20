@@ -404,8 +404,6 @@ public class Tank extends GameObject {
 				Vec2 moveVec = cmdMove.moveVec;
 				double moveDst = moveVec.length();
 				double moveTravelTime = moveDst / this.tankMoveSpeed; 
-				double acceleration = 1;
-				double oVelocity = moveDst/moveTravelTime;
 				// Update the active command...''
 				moveElapsedTime += deltaTime;
 				double t = Math.min(moveElapsedTime / moveTravelTime, 1.0);
