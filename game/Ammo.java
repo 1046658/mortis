@@ -93,7 +93,6 @@ public class Ammo extends GameObject {
 			this.pos = Vec2.add(this.pos, step);
 			Vec2 motionVec = Vec2.subtract(this.pos, prevPos);
 
-
 			// Check for hitting things (do swept collision to avoid missing it)...
 			ArrayList<GameObject> gameObjects = Simulation.getGameObjects();
 			for (int i = 0; i < gameObjects.size(); ++i) {
@@ -104,9 +103,12 @@ public class Ammo extends GameObject {
 					Target target = (Target)gameObject;
 					if (Util.intersectCircleCapsule(target.pos, target.getRadius(), prevPos, motionVec, this.radius)) {
 						// Tell the target about it...
+
 						target.onHitByAmmo(this.playerIdx);
 					
 						// That's it for us...
+						this.timeTillDeath = Math.max(this.timeTillDeath, 0.0001);
+					} else if (currentSpeed <= 0.75) {
 						this.timeTillDeath = Math.max(this.timeTillDeath, 0.0001);
 					}
 				}
@@ -128,8 +130,8 @@ public class Ammo extends GameObject {
 					}
 				}
 			}
-						
 			// Check max range...
+
 			if ((Vec2.subtract(this.pos, this.startPos)).lengthSqr() >= (this.maxRange * this.maxRange)) {
 				// That's it for us...
 				this.timeTillDeath = Math.max(this.timeTillDeath, 0.0001);
